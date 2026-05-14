@@ -75,7 +75,7 @@ npm install
 **Configuration (.env)**:
 ```
 PORT=5000
-GITHUB_USERNAME=Maxou2003
+GITHUB_USERNAME=
 GITHUB_TOKEN=           # Optional: Augmente la limite de l'API
 ```
 
@@ -165,5 +165,5 @@ MIT
 
 **Maxence Martin**
 - GitHub: [@Maxou2003](https://github.com/Maxou2003)
-- Email: lexandre.maxence@gmail.com
+- Email: lemaila.maxence@gmail.com
 - LinkedIn: [maxence-martin-dev](https://www.linkedin.com/in/maxence-martin-dev)

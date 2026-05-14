@@ -1,7 +1,46 @@
 import './Contact.css';
+import { useState } from 'react';
 import { Mail, GitMerge, Briefcase, Phone, MapPin } from 'lucide-react';
 
 function Contact({ githubUser }) {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus(null);
+
+    try {
+      const response = await fetch('/api/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus({ type: 'success', message: '✅ Message envoyé avec succès!' });
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        // Afficher le message d'erreur du serveur
+        const errorMsg = data.error || 'Erreur lors de l\'envoi';
+        setStatus({ type: 'error', message: `❌ ${errorMsg}` });
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      setStatus({ type: 'error', message: '❌ Erreur lors de l\'envoi du message' });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <section id="contact" className="contact">
       <div className="container">
@@ -41,27 +80,55 @@ function Contact({ githubUser }) {
           </div>
 
           <div className="contact-form-container">
-            <form className="contact-form" onSubmit={(e) => {
-              e.preventDefault();
-              // À implémenter avec un service de mail (EmailJS, Nodemailer, etc.)
-              alert('Fonctionnalité à implémenter');
-            }}>
+            <form className="contact-form" onSubmit={handleSubmit}>
+              {status && (
+                <div className={`form-status form-status-${status.type}`}>
+                  {status.message}
+                </div>
+              )}
+
               <div className="form-group">
                 <label htmlFor="name">Nom</label>
-                <input type="text" id="name" name="name" required />
+                <input 
+                  type="text" 
+                  id="name" 
+                  name="name" 
+                  value={formData.name}
+                  onChange={handleChange}
+                  required 
+                  disabled={loading}
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="email">Email</label>
-                <input type="email" id="email" name="email" required />
+                <input 
+                  type="email" 
+                  id="email" 
+                  name="email" 
+                  value={formData.email}
+                  onChange={handleChange}
+                  required 
+                  disabled={loading}
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="message">Message</label>
-                <textarea id="message" name="message" rows="5" required></textarea>
+                <textarea 
+                  id="message" 
+                  name="message" 
+                  rows="5" 
+                  value={formData.message}
+                  onChange={handleChange}
+                  required 
+                  disabled={loading}
+                ></textarea>
               </div>
 
-              <button type="submit" className="btn btn-submit">Envoyer</button>
+              <button type="submit" className="btn btn-submit" disabled={loading}>
+                {loading ? 'Envoi en cours...' : 'Envoyer'}
+              </button>
             </form>
           </div>
         </div>

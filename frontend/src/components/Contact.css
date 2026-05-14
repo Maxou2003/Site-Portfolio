@@ -118,10 +118,53 @@
   transition: all 0.3s ease;
 }
 
-.btn-submit:hover {
+.btn-submit:hover:not(:disabled) {
   background-color: var(--color-secondary);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.form-group input:disabled,
+.form-group textarea:disabled {
+  background-color: #f5f5f5;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.form-status {
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-status-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.form-status-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
 }
 
 @media (max-width: 768px) {
