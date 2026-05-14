@@ -1,7 +1,20 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const rateLimit = require('express-rate-limit');
+const validator = require('email-validator');
 const router = express.Router();
+
+// Fonction pour échapper l'HTML et prévenir les XSS
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+}
 
 // Store pour tracker les IPs et éviter le spam
 const spamTracker = new Map();
@@ -17,14 +30,18 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Rate limiter : max 1 message par heure par IP
+// Rate limiter : max 1 messages par heure par IP
 const emailLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 heure
   max: 1, // 1 requête max
   message: 'Trop de messages envoyés. Réessayez plus tard.',
   standardHeaders: true,
   legacyHeaders: false,
-  // Ne pas utiliser de keyGenerator personnalisé pour éviter les problèmes IPv6
+  handler: (req, res) => {
+    res.status(429).json({ 
+      error: 'Trop de messages envoyés. Réessayez plus tard.' 
+    });
+  },
 });
 
 // Fonction de validation anti-spam
@@ -40,7 +57,7 @@ function validateMessage(name, email, message) {
     errors.push('Le message doit faire entre 10 et 5000 caractères');
   }
 
-  // Détector les patterns de spam
+  // Détecter les patterns de spam
   const spamPatterns = [
     /viagra|casino|lottery|click here|buy now|free money/gi,
     /http[s]?:\/\/.+/g, // Trop de liens
@@ -60,29 +77,12 @@ function validateMessage(name, email, message) {
     }
   }
 
-  // Vérifier l'email
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  // Vérifier l'email avec la librairie email-validator
+  if (!validator.validate(email)) {
     errors.push('Email invalide');
   }
 
   return errors;
-}
-
-// Fonction pour vérifier le délai minimum entre messages
-function checkRateByIP(ip) {
-  const now = Date.now();
-  const lastRequest = spamTracker.get(ip) || 0;
-  const timeDiff = now - lastRequest;
-  const minDelayMs = 30 * 1000; // 30 secondes
-
-  if (timeDiff < minDelayMs) {
-    return {
-      allowed: false,
-      waitTime: Math.ceil((minDelayMs - timeDiff) / 1000),
-    };
-  }
-
-  return { allowed: true };
 }
 
 // Route protégée pour envoyer un email
@@ -103,15 +103,7 @@ router.post('/send', emailLimiter, async (req, res) => {
       error: validationErrors[0] || 'Format de message invalide'
     });
   }
-
-  // Vérifier le délai minimum entre messages
-  const rateCheck = checkRateByIP(clientIP);
-  if (!rateCheck.allowed) {
-    return res.status(429).json({ 
-      error: `Attendez ${rateCheck.waitTime}s avant d'envoyer un autre message` 
-    });
-  }
-
+  
   // Mettre à jour le tracker
   spamTracker.set(clientIP, Date.now());
 
@@ -122,34 +114,41 @@ router.post('/send', emailLimiter, async (req, res) => {
   }
 
   try {
+    const recipientEmail = process.env.CONTACT_EMAIL || 'lemaila.maxence@gmail.com';
+    
+    // Échapper les valeurs pour prévenir les XSS
+    const escapedName = escapeHtml(name);
+    const escapedEmail = escapeHtml(email);
+    const escapedMessage = escapeHtml(message);
+    
     // Email pour vous (portfolio)
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: 'lemaila.maxence@gmail.com',
-      subject: `Nouveau message de ${name} via votre portfolio`,
+      to: recipientEmail,
+      subject: `Nouveau message de ${escapedName} via votre portfolio`,
       html: `
         <h2>Nouveau message du formulaire de contact</h2>
-        <p><strong>De:</strong> ${name}</p>
-        <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+        <p><strong>De:</strong> ${escapedName}</p>
+        <p><strong>Email:</strong> <a href="mailto:${escapedEmail}">${escapedEmail}</a></p>
         <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
+        <p>${escapedMessage.replace(/\n/g, '<br>')}</p>
         <hr>
         <p><small>Message envoyé depuis votre portfolio | IP: ${clientIP}</small></p>
       `,
-      replyTo: email,
+      replyTo: email, // Pas d'échappement ici car utilisé pour replyTo
     });
 
     // Email de confirmation pour le visiteur
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: email,
+      to: email, // Pas d'échappement ici car utilisé comme destinataire
       subject: 'Votre message a bien été reçu',
       html: `
-        <h2>Merci de votre message, ${name}!</h2>
+        <h2>Merci de votre message, ${escapedName}!</h2>
         <p>J'ai reçu votre message et je vous répondrai dès que possible.</p>
         <hr>
         <p><strong>Votre message:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
+        <p>${escapedMessage.replace(/\n/g, '<br>')}</p>
         <hr>
         <p>Cordialement,<br>Maxence Martin</p>
       `,

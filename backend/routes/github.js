@@ -5,6 +5,17 @@ const router = express.Router();
 const GITHUB_USERNAME = process.env.GITHUB_USERNAME || 'Maxou2003';
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
+// Validation du username GitHub
+function validateGithubUsername(username) {
+  // Accepte seulement alphanumériques, tirets et underscores
+  const validPattern = /^[a-zA-Z0-9_-]+$/;
+  return validPattern.test(username) && username.length > 0 && username.length < 40;
+}
+
+if (!validateGithubUsername(GITHUB_USERNAME)) {
+  throw new Error('GITHUB_USERNAME invalide');
+}
+
 // Récupère les repos de l'utilisateur
 router.get('/repos', async (req, res) => {
   try {
