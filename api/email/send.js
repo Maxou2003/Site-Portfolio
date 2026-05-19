@@ -1,8 +1,5 @@
-const express = require('express');
 const { Resend } = require('resend');
-const rateLimit = require('express-rate-limit');
 const validator = require('email-validator');
-const router = express.Router();
 
 // Fonction pour échapper l'HTML et prévenir les XSS
 function escapeHtml(text) {
@@ -18,23 +15,6 @@ function escapeHtml(text) {
 
 // Store pour tracker les IPs et éviter le spam
 const spamTracker = new Map();
-
-// Configuration de Resend
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-// Rate limiter : max 1 messages par heure par IP
-const emailLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 heure
-  max: 1, // 1 requête max
-  message: 'Trop de messages envoyés. Réessayez plus tard.',
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req, res) => {
-    res.status(429).json({ 
-      error: 'Trop de messages envoyés. Réessayez plus tard.' 
-    });
-  },
-});
 
 // Fonction de validation anti-spam
 function validateMessage(name, email, message) {
@@ -77,14 +57,52 @@ function validateMessage(name, email, message) {
   return errors;
 }
 
-// Route protégée pour envoyer un email
-router.post('/send', emailLimiter, async (req, res) => {
+// Rate limiting simple (par IP)
+const isRateLimited = (ip) => {
+  const lastRequest = spamTracker.get(ip);
+  if (!lastRequest) {
+    spamTracker.set(ip, Date.now());
+    return false;
+  }
+
+  const timeDiff = Date.now() - lastRequest;
+  if (timeDiff < 60 * 60 * 1000) { // 1 heure
+    return true;
+  }
+
+  spamTracker.set(ip, Date.now());
+  return false;
+};
+
+// API Route Vercel
+export default async (req, res) => {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   const { name, email, message } = req.body;
-  const clientIP = req.ip || req.connection.remoteAddress;
+  const clientIP = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
 
   // Validation basique
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Tous les champs sont requis' });
+  }
+
+  // Vérifier la limite de débit
+  if (isRateLimited(clientIP)) {
+    return res.status(429).json({ 
+      error: 'Trop de messages envoyés. Réessayez plus tard.' 
+    });
   }
 
   // Validation anti-spam
@@ -95,19 +113,17 @@ router.post('/send', emailLimiter, async (req, res) => {
       error: validationErrors[0] || 'Format de message invalide'
     });
   }
-  
-  // Mettre à jour le tracker
-  spamTracker.set(clientIP, Date.now());
 
-  // Vérifier que les variables d'env sont configurées
+  // Vérifier que la clé API Resend est configurée
   if (!process.env.RESEND_API_KEY) {
     console.error('Variable d\'environnement RESEND_API_KEY non configurée');
     return res.status(500).json({ error: 'Serveur d\'email non configuré' });
   }
 
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const recipientEmail = process.env.CONTACT_EMAIL || 'lemaila.maxence@gmail.com';
-    const fromEmail = process.env.EMAIL_FROM || 'onboarding@resend.dev'; // Adresse par défaut Resend
+    const fromEmail = process.env.EMAIL_FROM || 'onboarding@resend.dev';
     
     // Échapper les valeurs pour prévenir les XSS
     const escapedName = escapeHtml(name);
@@ -128,13 +144,13 @@ router.post('/send', emailLimiter, async (req, res) => {
         <hr>
         <p><small>Message envoyé depuis votre portfolio | IP: ${clientIP}</small></p>
       `,
-      replyTo: email, // Pas d'échappement ici car utilisé pour replyTo
+      replyTo: email,
     });
 
     // Email de confirmation pour le visiteur
     await resend.emails.send({
       from: fromEmail,
-      to: email, // Pas d'échappement ici car utilisé comme destinataire
+      to: email,
       subject: 'Votre message a bien été reçu',
       html: `
         <h2>Merci de votre message, ${escapedName}!</h2>
@@ -148,11 +164,9 @@ router.post('/send', emailLimiter, async (req, res) => {
     });
 
     console.log(`[EMAIL] Message reçu de ${email} (${clientIP})`);
-    res.json({ success: true, message: 'Email envoyé avec succès!' });
+    res.status(200).json({ success: true, message: 'Email envoyé avec succès!' });
   } catch (error) {
     console.error('Erreur lors de l\'envoi d\'email:', error);
     res.status(500).json({ error: 'Erreur lors de l\'envoi du message' });
   }
-});
-
-module.exports = router;
+};

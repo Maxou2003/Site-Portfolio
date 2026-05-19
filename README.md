@@ -5,9 +5,30 @@ Portfolio personnel fullstack présentant mes projets GitHub et mon CV.
 ## 🚀 Stack Technique
 
 - **Frontend**: React 18 + Vite
-- **Backend**: Node.js + Express
+- **Backend**: API Routes Vercel (Node.js serverless)
+- **Email**: Resend pour les mails transactionnels
+- **Hosting**: Vercel
 - **API**: GitHub REST API
 - **Styling**: CSS3 avec variables CSS
+
+## 📂 Structure du Projet (Vercel)
+
+```
+.
+├── api/                    # API Routes Vercel (serverless)
+│   ├── github/
+│   │   ├── repos.js       # GET /api/github/repos
+│   │   └── user.js        # GET /api/github/user
+│   └── email/
+│       └── send.js        # POST /api/email/send
+├── frontend/              # Application React
+│   ├── src/
+│   ├── package.json
+│   └── vite.config.js
+├── backend/               # (Legacy) Serveur Express local
+├── vercel.json           # Configuration Vercel
+└── package.json
+```
 
 ## 🎯 Contrôle des Projets Affichés
 
@@ -28,6 +49,62 @@ Le portfolio affiche automatiquement **uniquement les repos GitHub** qui ont le 
 ### Avantages :
 - ✅ **Contrôle total** sur ce qui est affiché
 - ✅ **Pas de code à modifier** à chaque nouveau projet
+
+## 🚀 Déployer sur Vercel
+
+### 1. Connecter le repo GitHub
+
+```bash
+vercel link
+```
+
+### 2. Configurer les variables d'environnement
+
+Dans le dashboard Vercel, ajoutez ces secrets :
+
+- `GITHUB_USERNAME` - Votre username GitHub
+- `GITHUB_TOKEN` - Token GitHub (optionnel mais recommandé)
+- `RESEND_API_KEY` - Clé API Resend
+- `EMAIL_FROM` - Email d'envoi (ex: noreply@votredomaine.com)
+- `CONTACT_EMAIL` - Email pour recevoir les messages
+- `FRONTEND_URL` - URL de votre site (ex: https://votresite.com)
+
+### 3. Déployer
+
+```bash
+vercel deploy
+```
+
+## 🔧 Développement Local
+
+### Avec le serveur Express classique (backend/)
+
+```bash
+npm install
+npm run setup
+npm run dev
+```
+
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000
+
+### Avec Vercel CLI (production-like)
+
+```bash
+vercel dev
+```
+
+- Accédez à http://localhost:3000
+- Les API routes seront à http://localhost:3000/api/...
+
+## 📧 Configuration Email (Resend)
+
+- **Service**: Resend API
+- **Limite**: 100 emails/jour avec plan gratuit
+- **Sender**: `onboarding@resend.dev` par défaut
+- **Custom Domain**: Configurable via Resend dashboard
+
+Pour utiliser votre propre domaine d'email, achetez un domaine et configurez-le dans Resend.
 - ✅ **Topics visibles** comme tags sur les cartes projets
 - ✅ **Mise à jour automatique** lors du prochain déploiement
 
