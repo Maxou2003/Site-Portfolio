@@ -1,31 +1,24 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/dist",
-  "framework": "vite",
-  "installCommand": "npm install",
-  "env": {
-    "GITHUB_USERNAME": "@GITHUB_USERNAME",
-    "GITHUB_TOKEN": "@GITHUB_TOKEN",
-    "RESEND_API_KEY": "@RESEND_API_KEY",
-    "EMAIL_FROM": "@EMAIL_FROM",
-    "CONTACT_EMAIL": "@CONTACT_EMAIL",
-    "FRONTEND_URL": "@FRONTEND_URL"
-  },
-  "headers": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        }
-      ]
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     }
   ],
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/frontend/$1"
     }
   ]
 }
