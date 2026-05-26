@@ -122,8 +122,8 @@ export default async (req, res) => {
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const recipientEmail = process.env.CONTACT_EMAIL || 'lemaila.maxence@gmail.com';
-    const fromEmail = process.env.EMAIL_FROM || 'onboarding@resend.dev';
+    const recipientEmail = process.env.CONTACT_EMAIL;
+    const fromEmail = process.env.EMAIL_FROM;
     
     // Échapper les valeurs pour prévenir les XSS
     const escapedName = escapeHtml(name);

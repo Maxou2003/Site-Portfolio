@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const GITHUB_USERNAME = process.env.GITHUB_USERNAME || 'Maxou2003';
+const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
 // Validation du username GitHub
