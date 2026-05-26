@@ -10,5 +10,22 @@
     "EMAIL_FROM": "@EMAIL_FROM",
     "CONTACT_EMAIL": "@CONTACT_EMAIL",
     "FRONTEND_URL": "@FRONTEND_URL"
-  }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
