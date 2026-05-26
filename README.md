@@ -67,7 +67,6 @@ Dans le dashboard Vercel, ajoutez ces secrets :
 - `RESEND_API_KEY` - Clé API Resend
 - `EMAIL_FROM` - Email d'envoi (ex: noreply@votredomaine.com)
 - `CONTACT_EMAIL` - Email pour recevoir les messages
-- `FRONTEND_URL` - URL de votre site (ex: https://votresite.com)
 
 ### 3. Déployer
 
