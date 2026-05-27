@@ -1,0 +1,220 @@
+/* --- FOOTER DE BASE --- */
+.footer-container {
+  background-color: #0f172a;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-copyright {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.footer-link-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.7;
+}
+
+.footer-link-btn:hover {
+  opacity: 1;
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+/* --- MODALE --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(2, 6, 23, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1.5rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 550px;
+  border-radius: 24px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- HEADER DE LA MODALE --- */
+.modal-header {
+  padding: 2.5rem 2.5rem 1.5rem;
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.modal-title-line {
+  width: 40px;
+  height: 4px;
+  background: #3b82f6;
+  margin: 1rem auto 0;
+  border-radius: 2px;
+}
+
+/* --- CORPS DE LA MODALE --- */
+.modal-body {
+  padding: 0 2.5rem 2.5rem;
+}
+
+.legal-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 16px;
+  transition: background 0.2s;
+}
+
+.legal-item:hover {
+  background-color: #f8fafc;
+}
+
+.legal-icon {
+  width: 45px;
+  height: 45px;
+  background: #eff6ff;
+  color: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.legal-content label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.legal-content p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.legal-content p strong {
+  color: #0f172a;
+}
+
+.legal-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+}
+
+.legal-link:hover {
+  border-bottom-color: #2563eb;
+}
+
+/* --- BANDEAU INFO LCEN --- */
+.legal-notice-box {
+  background: #f1f5f9;
+  padding: 1.2rem;
+  border-radius: 14px;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.legal-notice-icon {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.legal-notice-box p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+/* --- BOUTON FERMER --- */
+.modal-close-icon {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 36px;
+  height: 36px;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 50%;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.modal-close-icon:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  transform: rotate(90deg);
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .footer-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .modal-card {
+    border-radius: 0;
+    height: 100%;
+    max-height: 100%;
+  }
+}
