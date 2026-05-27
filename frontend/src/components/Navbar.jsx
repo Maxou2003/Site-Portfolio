@@ -21,6 +21,7 @@ function Navbar() {
       </button>
       <ul className={`nav-menu ${isOpen ? 'active' : ''}`}>
         <li><a href="#accueil" onClick={closeMenu}>Accueil</a></li>
+        <li><a href="#about" onClick={closeMenu}>Qui suis-je</a></li>
         <li><a href="#projets" onClick={closeMenu}>Projets</a></li>
         <li><a href="#cv" onClick={closeMenu}>CV</a></li>
         <li><a href="#contact" onClick={closeMenu}>Contact</a></li>

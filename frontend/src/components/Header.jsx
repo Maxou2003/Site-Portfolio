@@ -9,7 +9,7 @@ function Header({ githubUser }) {
             <div className="hero-text">
               <h1>Maxence Martin</h1>
               <h2>Développeur Web Full Stack</h2>
-              <p>Laravel • Symfony • React • Passion pour l'innovation</p>
+              <p>Laravel • Symfony • React • Node.js</p>
               <div className="hero-buttons">
                 <a href="#projets" className="btn btn-primary">Voir mes projets</a>
                 <a href="#contact" className="btn btn-secondary">Me contacter</a>

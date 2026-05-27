@@ -1,0 +1,123 @@
+/* CONFIGURATION DE LA SECTION */
+.about-section {
+  padding: 5rem 2rem;
+  background-color: #ffffff;
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* EN-TÊTE DE LA SECTION (TITRE ET SOUS-TITRE) */
+.about-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.about-main-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.about-subtitle {
+  font-size: 1.2rem;
+  color: #64748b;
+  font-weight: 400;
+}
+
+.about-title-underline {
+  width: 60px;
+  height: 4px;
+  background-color: #cbd5e1;
+  margin: 1.2rem auto 0 auto;
+  border-radius: 2px;
+}
+
+/* GRILLE RESPONSIVE - MOBILE FIRST (1 COLONNE PAR DÉFAUT) */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3.5rem;
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* STRUCTURE DES COLONNES */
+.about-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.column-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 1.5rem;
+}
+
+/* CONTAINER DES ILLUSTRATIONS (CIRCULAIRES) */
+.illustration-container {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.column-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* EFFET HOVER TECHNIQUE */
+.about-column:hover .illustration-container {
+  transform: scale(1.05);
+}
+
+/* VARIATIONS DE NUANCES POUR LES COULISSES DES CRÉATIONS (STYLE PASTEL MAQUETTE) */
+.color-blue .column-svg circle { fill: #f0f7ff; }
+.color-green .column-svg circle { fill: #f0fdf4; }
+.color-teal .column-svg circle { fill: #f0fdfa; }
+
+/* TEXTE DESCRIPTIFS */
+.column-description {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #475569;
+  max-width: 340px;
+}
+
+.column-description strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* ========================================== */
+/* MEDIA QUERIES (ÉCRANS TABLETTES ET PC)   */
+/* ========================================== */
+@media (min-width: 768px) {
+  .about-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur tablette */
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 colonnes parfaitement alignées sur PC */
+    gap: 2rem;
+  }
+  
+  .column-description {
+    max-width: 100%; /* Permet au texte de prendre l'espace de sa colonne sur grand écran */
+    padding: 0 0.5rem;
+  }
+}
