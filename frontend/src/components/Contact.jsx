@@ -52,9 +52,9 @@ function Contact({ githubUser }) {
             <p>Je suis toujours ouvert à de nouvelles opportunités et projets intéressants.</p>
             
             <div className="contact-links">
-              <a href="mailto:lemaila.maxence@gmail.com" className="contact-link">
+              <a href="mailto:contact@maxence-martin-dev.fr" className="contact-link">
                 <Mail size={20} className="icon" />
-                <span>lemaila.maxence@gmail.com</span>
+                <span>contact@maxence-martin-dev.fr</span>
               </a>
               
               <a href="https://github.com/Maxou2003" target="_blank" rel="noopener noreferrer" className="contact-link">
@@ -67,14 +67,9 @@ function Contact({ githubUser }) {
                 <span>LinkedIn</span>
               </a>
               
-              <a href="tel:+33785774204" className="contact-link">
-                <Phone size={20} className="icon" />
-                <span>+33 7 85 77 42 04</span>
-              </a>
-
-              <p className="contact-address">
+              <p className="contact-link">
                 <MapPin size={20} className="icon" />
-                5 allée de la Camomille, 49070 Beaucouzé, France
+                 49070 Beaucouzé, France
               </p>
             </div>
           </div>
