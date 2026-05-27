@@ -50,7 +50,7 @@ function CV() {
               <ul className="cv-list">
                 <li>Travailler en autonomie</li>
                 <li>Gérer des groupes de travail</li>
-                <li>Création de dataWarehouses</li>
+                <li>Création de data Warehouses</li>
               </ul>
             </div>
           </div>
@@ -82,7 +82,7 @@ function CV() {
               <ul className="cv-list">
                 <li>Création d'une application web sur mesure</li>
                 <li>Rédaction de specs techniques</li>
-                <li>Déploiement de l'application via azure</li>
+                <li>Déploiement de l'application via Azure</li>
               </ul>
             </div>
           </div>
@@ -94,7 +94,7 @@ function CV() {
             <div className="skills-grid">
               <div className="skill-group">
                 <h4>Développement Web</h4>
-                <p> PHP Laravel/ Symfony • Node.js • Express • TypeScript • React • Next.js</p>
+                <p>PHP Laravel/Symfony • Node.js • Express • TypeScript • React • Next.js</p>
               </div>
               
               <div className="skill-group">
@@ -109,7 +109,7 @@ function CV() {
               
               <div className="skill-group">
                 <h4>Outils IA</h4>
-                <p>Claude caude • Copilot • Antigravity</p>
+                <p>Claude code • Copilot • Antigravity</p>
               </div>
             </div>
           </div>
